@@ -1,7 +1,5 @@
 resource "aws_security_group" "eks-sg" {
   vpc_id = aws_vpc.fullcycle-vpc.id
-
-  # pode acessar qualquer coisa à partir do EKS
   egress {
     from_port = 0
     to_port = 0
@@ -11,15 +9,14 @@ resource "aws_security_group" "eks-sg" {
     description = "free access from inside the SG"
     # name = "EKS-output"
   }
-
   tags = {
-    "Name" = "${var.prefix}-sg ",
+    "Name" = "${var.prefix}-eks-sg ",
     "cliente" = "bid",
     "ambiente" = "dev"
   }
 }
 
-resource "aws_iam_role" "eks-cluster" {
+resource "aws_iam_role" "cluster-iam" {
   name = "${var.prefix}-${var.cluster_name}-role"
   assume_role_policy = <<POLICY
 {
@@ -35,15 +32,44 @@ resource "aws_iam_role" "eks-cluster" {
   ]
 }
 POLICY
+  tags = {
+    "Name" = "${var.prefix}-${var.cluster_name}-role",
+    "cliente" = "bid",
+    "ambiente" = "dev"
+  }
 }
 
-
 resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSVPCResourceController" {
-  role = aws_iam_role.eks-cluster.name
+  role = aws_iam_role.cluster-iam.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
 }
 
 resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSClusterPolicy" {
-  role = aws_iam_role.eks-cluster.name
+  role = aws_iam_role.cluster-iam.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+}
+
+resource "aws_cloudwatch_log_group" "eks-cluster-log" {
+  name = "/aws/eks/${var.prefix}-${var.cluster_name}/cluster"
+  retention_in_days = var.retention_days
+}
+
+resource "aws_eks_cluster" "eks-cluster" {
+  name = "${var.prefix}-${var.cluster_name}-eks"
+  role_arn = aws_iam_role.cluster-iam.arn
+  enabled_cluster_log_types = ["api", "audit"]
+  vpc_config {
+    subnet_ids = aws_subnet.subnets[*].id
+    security_group_ids = [aws_security_group.eks-sg.id]
+  }
+  depends_on = [
+    aws_cloudwatch_log_group.eks-cluster-log,
+    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSClusterPolicy,
+  ]
+  tags = {
+    "Name" = "${var.prefix}-${var.cluster_name}-eks",
+    "cliente" = "bid",
+    "ambiente" = "dev"
+  }
 }
