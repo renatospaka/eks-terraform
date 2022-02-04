@@ -1,0 +1,10 @@
+## environment (local) stuff
+.vscode/
+
+## security stuff
+credentials*.txt
+
+## terraform out files
+.terraform/
+.terraform.lock*
+terraform.tfs*
