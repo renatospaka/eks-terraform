@@ -13,7 +13,7 @@ data "aws_availability_zones" "available" {}
 # }
 
 resource "aws_subnet" "web-subnets" {
-  count = 2
+  count = var.web_subnets_size
   vpc_id = aws_vpc.main-vpc.id
   cidr_block = "10.0.${count.index+3}.0/24"
   availability_zone = data.aws_availability_zones.available.names[count.index]

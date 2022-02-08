@@ -42,7 +42,6 @@ resource "aws_eks_node_group" "web-cluster-eks-grp-1" {
   cluster_name = aws_eks_cluster.eks-cluster.name
   node_role_arn = aws_iam_role.eks-cluster-node-iam.arn
   subnet_ids = aws_subnet.web-subnets[*].id
-  # instance_types = ["t3.medium"]
   instance_types = ["t3.micro"]
   scaling_config {
     desired_size = var.web_desired_size
