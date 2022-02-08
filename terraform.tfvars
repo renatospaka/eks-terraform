@@ -1,14 +1,20 @@
-prefix = "heykid"
-client = "own"
+prefix = "d3-bid"
+client = "bid"
 
 #retention log - in days
 retention_days = 14
 
-# cluster size
-cluster_name = "eks-hk"
-desired_size = 2
-max_size = 4
-min_size = 2
+# web cluster size
+web_cluster_name = "web-cluster"
+web_desired_size = 2
+web_max_size = 4
+web_min_size = 2
+
+# api cluster size
+api_cluster_name = "api-cluster"
+api_desired_size = 2
+api_max_size = 4
+api_min_size = 2
 
 #which region where the workload would be created
 region = "sa-east-1"

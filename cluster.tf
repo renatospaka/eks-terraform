@@ -1,5 +1,5 @@
-resource "aws_security_group" "eks-sg" {
-  vpc_id = aws_vpc.fullcycle-vpc.id
+resource "aws_security_group" "eks-web-sg" {
+  vpc_id = aws_vpc.main-vpc.id
   egress {
     from_port = 0
     to_port = 0
@@ -10,14 +10,14 @@ resource "aws_security_group" "eks-sg" {
     # name = "EKS-output"
   }
   tags = {
-    "Name" = "${var.prefix}-eks-sg ",
+    "Name" = "${var.prefix}-eks-web-sg ",
     "cliente" = var.client,
     "ambiente" = "dev"
   }
 }
 
 resource "aws_iam_role" "cluster-iam" {
-  name = "${var.prefix}-${var.cluster_name}-role"
+  name = "${var.prefix}-${var.web_cluster_name}-role"
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -33,7 +33,7 @@ resource "aws_iam_role" "cluster-iam" {
 }
 POLICY
   tags = {
-    "Name" = "${var.prefix}-${var.cluster_name}-role",
+    "Name" = "${var.prefix}-${var.web_cluster_name}-role",
     "cliente" = var.client,
     "ambiente" = "dev"
   }
@@ -50,17 +50,17 @@ resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSClusterPolicy" {
 }
 
 resource "aws_cloudwatch_log_group" "eks-cluster-log" {
-  name = "/aws/eks/${var.prefix}-${var.cluster_name}/cluster"
+  name = "/aws/eks/${var.prefix}-${var.web_cluster_name}/cluster"
   retention_in_days = var.retention_days
 }
 
 resource "aws_eks_cluster" "eks-cluster" {
-  name = "${var.prefix}-${var.cluster_name}-eks"
+  name = "${var.prefix}-${var.web_cluster_name}-eks"
   role_arn = aws_iam_role.cluster-iam.arn
   enabled_cluster_log_types = ["api", "audit"]
   vpc_config {
-    subnet_ids = aws_subnet.subnets[*].id
-    security_group_ids = [aws_security_group.eks-sg.id]
+    subnet_ids = aws_subnet.web-subnets[*].id
+    security_group_ids = [aws_security_group.eks-web-sg.id]
   }
   depends_on = [
     aws_cloudwatch_log_group.eks-cluster-log,
@@ -68,7 +68,7 @@ resource "aws_eks_cluster" "eks-cluster" {
     aws_iam_role_policy_attachment.eks-cluster-AmazonEKSClusterPolicy,
   ]
   tags = {
-    "Name" = "${var.prefix}-${var.cluster_name}-eks",
+    "Name" = "${var.prefix}-${var.web_cluster_name}-eks",
     "cliente" = var.client,
     "ambiente" = "dev"
   }

@@ -1,10 +1,16 @@
 variable "prefix" {}
-variable "cluster_name" {}
+
+variable "web_cluster_name" {}
+
 variable "retention_days" {}
 
-variable "desired_size" {}
-variable "max_size" {}
-variable "min_size" {}
+variable "web_desired_size" {}
+variable "web_max_size" {}
+variable "web_min_size" {}
+
+variable "api_desired_size" {}
+variable "api_max_size" {}
+variable "api_min_size" {}
 
 variable "client" {}
 variable "region" {}
