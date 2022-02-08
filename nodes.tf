@@ -16,7 +16,7 @@ resource "aws_iam_role" "cluster-node-iam" {
 POLICY
   tags = {
     "Name" = "${var.prefix}-${var.cluster_name}-node-role",
-    "cliente" = "bid",
+    "cliente" = var.client,
     "ambiente" = "dev"
   }
 }
@@ -41,29 +41,7 @@ resource "aws_eks_node_group" "node-grp-1" {
   cluster_name = aws_eks_cluster.eks-cluster.name
   node_role_arn = aws_iam_role.cluster-node-iam.arn
   subnet_ids = aws_subnet.subnets[*].id
-  instance_types = ["t3.medium"]
-  scaling_config {
-    desired_size = var.desired_size
-    max_size = var.max_size
-    min_size = var.min_size
-  }
-  depends_on = [
-    aws_iam_role_policy_attachment.cluster-node-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.cluster-node-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.cluster-node-AmazonEC2ContainerRegistryReadOnly,
-  ]
-  tags = {
-    "Name" = "${var.prefix}-${var.cluster_name}-eks-grp-1",
-    "cliente" = "bid",
-    "ambiente" = "dev"
-  }
-}
-
-resource "aws_eks_node_group" "node-grp2" {
-  node_group_name = "${var.prefix}-${var.cluster_name}-eks-grp-2"
-  cluster_name = aws_eks_cluster.eks-cluster.name
-  node_role_arn = aws_iam_role.cluster-node-iam.arn
-  subnet_ids = aws_subnet.subnets[*].id
+  # instance_types = ["t3.medium"]
   instance_types = ["t3.micro"]
   scaling_config {
     desired_size = var.desired_size
@@ -76,8 +54,31 @@ resource "aws_eks_node_group" "node-grp2" {
     aws_iam_role_policy_attachment.cluster-node-AmazonEC2ContainerRegistryReadOnly,
   ]
   tags = {
-    "Name" = "${var.prefix}-${var.cluster_name}-eks-grp-2",
-    "cliente" = "bid",
+    "Name" = "${var.prefix}-${var.cluster_name}-eks-grp-1",
+    "cliente" = var.client,
     "ambiente" = "dev"
   }
 }
+
+# resource "aws_eks_node_group" "node-grp2" {
+#   node_group_name = "${var.prefix}-${var.cluster_name}-eks-grp-2"
+#   cluster_name = aws_eks_cluster.eks-cluster.name
+#   node_role_arn = aws_iam_role.cluster-node-iam.arn
+#   subnet_ids = aws_subnet.subnets[*].id
+#   instance_types = ["t3.micro"]
+#   scaling_config {
+#     desired_size = var.desired_size
+#     max_size = var.max_size
+#     min_size = var.min_size
+#   }
+#   depends_on = [
+#     aws_iam_role_policy_attachment.cluster-node-AmazonEKSWorkerNodePolicy,
+#     aws_iam_role_policy_attachment.cluster-node-AmazonEKS_CNI_Policy,
+#     aws_iam_role_policy_attachment.cluster-node-AmazonEC2ContainerRegistryReadOnly,
+#   ]
+#   tags = {
+#     "Name" = "${var.prefix}-${var.cluster_name}-eks-grp-2",
+#     "cliente" = var.client,
+#     "ambiente" = "dev"
+#   }
+# }

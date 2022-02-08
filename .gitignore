@@ -8,3 +8,6 @@ credentials*.txt
 .terraform/
 .terraform.lock*
 terraform.tfs*
+
+## my onw files about tips, cli and other stuff
+commands.md

@@ -11,7 +11,7 @@ resource "aws_security_group" "eks-sg" {
   }
   tags = {
     "Name" = "${var.prefix}-eks-sg ",
-    "cliente" = "bid",
+    "cliente" = var.client,
     "ambiente" = "dev"
   }
 }
@@ -34,7 +34,7 @@ resource "aws_iam_role" "cluster-iam" {
 POLICY
   tags = {
     "Name" = "${var.prefix}-${var.cluster_name}-role",
-    "cliente" = "bid",
+    "cliente" = var.client,
     "ambiente" = "dev"
   }
 }
@@ -69,7 +69,7 @@ resource "aws_eks_cluster" "eks-cluster" {
   ]
   tags = {
     "Name" = "${var.prefix}-${var.cluster_name}-eks",
-    "cliente" = "bid",
+    "cliente" = var.client,
     "ambiente" = "dev"
   }
 }

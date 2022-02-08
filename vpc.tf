@@ -2,7 +2,7 @@ resource "aws_vpc" "fullcycle-vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
     "Name" = "${var.prefix}-vpc",
-    "cliente" = "bid",
+    "cliente" = var.client,
     "ambiente" = "dev"
   }
 }
@@ -20,7 +20,7 @@ resource "aws_subnet" "subnets" {
   map_public_ip_on_launch = true
   tags = {
     "Name" = "${var.prefix}-subnet-${count.index+1}",
-    "cliente" = "bid",
+    "cliente" = var.client,
     "ambiente" = "dev"
   }
 }
@@ -29,7 +29,7 @@ resource "aws_internet_gateway" "fullcycle-igw" {
   vpc_id = aws_vpc.fullcycle-vpc.id
   tags = {
     "Name" = "${var.prefix}-igw",
-    "cliente" = "bid",
+    "cliente" = var.client,
     "ambiente" = "dev"
   }
 }
@@ -42,7 +42,7 @@ resource "aws_route_table" "fullcycle-rtb" {
   }
   tags = {
     "Name" = "${var.prefix}-rtb",
-    "cliente" = "bid",
+    "cliente" = var.client,
     "ambiente" = "dev"
   }
 }
