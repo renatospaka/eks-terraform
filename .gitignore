@@ -10,4 +10,4 @@ credentials*.txt
 terraform.tfs*
 
 ## my onw files about tips, cli and other stuff
-commands.md
+# commands.md
