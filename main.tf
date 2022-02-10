@@ -42,7 +42,7 @@ module "ec2" {
 
   vpc_main_id = module.vpc.vpc_main_id
   
-  # api_subnet_ids = module.vpc.api_subnet_ids
+  api_subnet_ids = module.vpc.api_subnet_ids
   # db_subnet_ids = module.vpc.db_subnet_ids  
 
   # # ssh_key_name = module.ssh.ssh_key_name

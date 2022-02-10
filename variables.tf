@@ -19,7 +19,7 @@ variable "db_subnets_size" {}
 variable "client" {}
 variable "region" {}
 
-# variable "api_subnet_ids" {}
+variable "api_subnet_ids" {}
 # variable "db_subnet_ids" {}
 
 # variable "ssh_key_name" {}
