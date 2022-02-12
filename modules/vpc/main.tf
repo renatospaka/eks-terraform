@@ -48,7 +48,10 @@ resource "aws_nat_gateway" "main-natgw" {
   allocation_id = aws_eip.main-natgw-eip.id
   # subnet_id = var.web_subnet_ids
   subnet_id = aws_subnet.web-subnets[0].id
-  depends_on = [aws_internet_gateway.main-igw]
+  depends_on = [
+      aws_internet_gateway.main-igw, 
+      aws_eip.main-natgw-eip
+    ]
 
   tags = {
     "Name" = "${var.prefix}-main-natgw",

@@ -8,6 +8,9 @@ module "vpc" {
   db_subnets_size = var.db_subnets_size
 
   web_subnet_ids = module.vpc.web_subnet_ids
+  web_subnet_id_bastion = module.vpc.web_subnet_id_bastion
+  api_subnet_id_bastion = module.vpc.api_subnet_id_bastion
+  db_subnet_id_bastion = module.vpc.db_subnet_id_bastion
 }
 
 module "web-eks" {
@@ -26,14 +29,6 @@ module "web-eks" {
   web_min_size = var.web_min_size
 }
 
-# module "ssh" {
-#   source = "./modules/ssh"
-#   prefix = var.prefix
-#   client = var.client
-
-#   ssh_key_name = var.ssh_key_name
-# }
-
 module "ec2" {
   source = "./modules/ec2"
   
@@ -42,8 +37,16 @@ module "ec2" {
 
   vpc_main_id = module.vpc.vpc_main_id
   
-  api_subnet_ids = module.vpc.api_subnet_ids
-  # db_subnet_ids = module.vpc.db_subnet_ids  
-
+  web_subnet_id_bastion = module.vpc.web_subnet_id_bastion
+  api_subnet_id_bastion = module.vpc.api_subnet_id_bastion
+  db_subnet_id_bastion = module.vpc.db_subnet_id_bastion
   # # ssh_key_name = module.ssh.ssh_key_name
 }
+
+# module "ssh" {
+#   source = "./modules/ssh"
+#   prefix = var.prefix
+#   client = var.client
+
+#   ssh_key_name = var.ssh_key_name
+# }
