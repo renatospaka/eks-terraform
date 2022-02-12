@@ -59,7 +59,6 @@ resource "aws_eks_cluster" "eks-cluster" {
   role_arn = aws_iam_role.cluster-iam.arn
   enabled_cluster_log_types = ["api", "audit"]
   vpc_config {
-    # subnet_ids = aws_subnet.web-subnets[*].id
     subnet_ids = var.web_subnet_ids
     security_group_ids = [aws_security_group.eks-web-sg.id]
   }
@@ -77,9 +76,7 @@ resource "aws_eks_cluster" "eks-cluster" {
 
 ########################################
 # início da criação dos nodes do cluster
-
 resource "aws_iam_role" "eks-cluster-node-iam" {
-  # name = "${var.prefix}-${var.web_cluster_name}-node-role"
   name = "${var.prefix}-eks-node-role"
   assume_role_policy = <<POLICY
 {
@@ -121,7 +118,6 @@ resource "aws_eks_node_group" "web-cluster-eks-grp-1" {
   node_group_name = "${var.prefix}-${var.web_cluster_name}-eks-grp-1"
   cluster_name = aws_eks_cluster.eks-cluster.name
   node_role_arn = aws_iam_role.eks-cluster-node-iam.arn
-  # subnet_ids = aws_subnet.web-subnets[*].id
   subnet_ids = var.web_subnet_ids
   instance_types = ["t3.micro"]
   scaling_config {

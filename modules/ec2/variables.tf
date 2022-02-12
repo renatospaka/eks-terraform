@@ -3,7 +3,6 @@ variable "client" {}
 
 variable "vpc_main_id" {}
 
-# # variable "ssh_key_name" {}
-
+variable "web_subnet_id_bastion" {}
 variable "api_subnet_ids" {}
-# variable "db_subnet_ids" {}
+variable "api_subnet_id_bastion" {}

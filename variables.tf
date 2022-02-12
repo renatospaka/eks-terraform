@@ -1,5 +1,8 @@
 variable "prefix" {}
 
+variable "client" {}
+variable "region" {}
+
 variable "retention_days" {}
 
 variable "web_cluster_name" {}
@@ -16,10 +19,5 @@ variable "api_min_size" {}
 
 variable "db_subnets_size" {}
 
-variable "client" {}
-variable "region" {}
-
-variable "api_subnet_ids" {}
-# variable "db_subnet_ids" {}
 
 # variable "ssh_key_name" {}
