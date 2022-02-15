@@ -13,8 +13,8 @@ module "vpc" {
   db_subnet_id_bastion = module.vpc.db_subnet_id_bastion
 }
 
-module "web-eks" {
-  source = "./modules/eks/web"
+module "eks" {
+  source = "./modules/eks"
   prefix = var.prefix
   client = var.client
 
@@ -27,7 +27,14 @@ module "web-eks" {
   web_desired_size = var.web_desired_size
   web_max_size = var.web_max_size
   web_min_size = var.web_min_size
+
+  api_subnet_ids = module.vpc.api_subnet_ids
+  api_cluster_name = var.api_cluster_name
+  api_desired_size = var.api_desired_size
+  api_max_size = var.api_max_size
+  api_min_size = var.api_min_size
 }
+
 
 module "ec2" {
   source = "./modules/ec2"
