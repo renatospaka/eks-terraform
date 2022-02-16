@@ -115,8 +115,8 @@ resource "aws_iam_role_policy_attachment" "cluster-node-AmazonEC2ContainerRegist
 ########################################
 # cloudwatch group  
 # 
-resource "aws_cloudwatch_log_group" "eks-cluster-log" {
-  name = "/aws/eks/${var.prefix}-${var.web_cluster_name}/cluster"
+resource "aws_cloudwatch_log_group" "cloudwatch-log" {
+  name = "/aws/eks/${var.prefix}/cluster"
   retention_in_days = var.retention_days
 }
 
@@ -133,7 +133,7 @@ resource "aws_eks_cluster" "web-eks-cluster" {
     security_group_ids = [aws_security_group.eks-web-sg.id]
   }
   depends_on = [
-    aws_cloudwatch_log_group.eks-cluster-log,
+    aws_cloudwatch_log_group.cloudwatch-log,
     aws_iam_role_policy_attachment.eks-cluster-AmazonEKSVPCResourceController,
     aws_iam_role_policy_attachment.eks-cluster-AmazonEKSClusterPolicy,
   ]
@@ -180,7 +180,7 @@ resource "aws_eks_cluster" "api-eks-cluster" {
     security_group_ids = [aws_security_group.eks-api-sg.id]
   }
   depends_on = [
-    aws_cloudwatch_log_group.eks-cluster-log,
+    aws_cloudwatch_log_group.cloudwatch-log,
     aws_iam_role_policy_attachment.eks-cluster-AmazonEKSVPCResourceController,
     aws_iam_role_policy_attachment.eks-cluster-AmazonEKSClusterPolicy,
   ]

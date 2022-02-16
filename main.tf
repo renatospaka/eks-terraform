@@ -8,9 +8,16 @@ module "vpc" {
   db_subnets_size = var.db_subnets_size
 
   web_subnet_ids = module.vpc.web_subnet_ids
+  # db_subnet_ids = module.vpc.db_subnet_ids
+
+  # # db_subnet_id0 = module.vpc.db_subnet_id0
+  # # db_subnet_id1 = module.vpc.db_subnet_id1
+
   web_subnet_id_bastion = module.vpc.web_subnet_id_bastion
   api_subnet_id_bastion = module.vpc.api_subnet_id_bastion
   db_subnet_id_bastion = module.vpc.db_subnet_id_bastion
+
+  sg-developers = module.ec2.sg-developers
 }
 
 module "eks" {
@@ -35,7 +42,6 @@ module "eks" {
   api_min_size = var.api_min_size
 }
 
-
 module "ec2" {
   source = "./modules/ec2"
   
@@ -47,13 +53,21 @@ module "ec2" {
   web_subnet_id_bastion = module.vpc.web_subnet_id_bastion
   api_subnet_id_bastion = module.vpc.api_subnet_id_bastion
   db_subnet_id_bastion = module.vpc.db_subnet_id_bastion
-  # # ssh_key_name = module.ssh.ssh_key_name
 }
 
-# module "ssh" {
-#   source = "./modules/ssh"
+
+## problems with Terraform objects that 
+## exports lists in incompatible way with
+## each other - unbelivable 
+# module "rds" {
+#   source = "./modules/rds"
+  
 #   prefix = var.prefix
 #   client = var.client
 
-#   ssh_key_name = var.ssh_key_name
+#   vpc_main_id = module.vpc.vpc_main_id
+
+#   # db_subnet_ids = module.vpc.db_subnet_ids
+#   db_subnet_id0 = module.vpc.db_subnet_id0
+#   db_subnet_id1 = module.vpc.db_subnet_id1
 # }

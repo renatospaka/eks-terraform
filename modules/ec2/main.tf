@@ -40,16 +40,98 @@ resource "null_resource" "ssh" {
 # Security group to allow access to the
 # bastion server. All SSH setup must be
 # executed manually
+resource "aws_security_group" "developers-sg" {
+  name = "${var.prefix}-developers-sg"
+  description = "Security Group to allow inbound access for the developer team"
+  vpc_id = var.vpc_main_id
+  ingress {
+    cidr_blocks = ["277.277.277.277/104"]
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    description = "Allows inbound ssh connections from the Internet to Fields"
+  }
+  ingress {
+    cidr_blocks = ["277.277.277.277/104"]
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+    description = "Allows inbound Postgres connections from the Internet to Fields"
+  }
+  ingress {
+    cidr_blocks = ["277.277.277.277/104"]
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    description = "Allows inbound ssh connections from the Internet to Tevao"
+  }
+  ingress {
+    cidr_blocks = ["277.277.277.277/104"]
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+    description = "Allows inbound Postgres connections from the Internet to Tevao"
+  }
+  ingress {
+    cidr_blocks = ["277.277.277.277/104"]
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    description = "Allows inbound ssh connections from the Internet to Spaka"
+  }
+  ingress {
+    cidr_blocks = ["277.277.277.277/104"]
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+    description = "Allows inbound Postgres connections from the Internet to Spaka"
+  }
+  egress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    description = "Allows outbound communication to anywhere"
+  }
+
+  tags = {
+    "Name" = "${var.prefix}-developers-sg",
+    "cliente" = var.client,
+    "ambiente" = "dev"
+  }
+}
+
 resource "aws_security_group" "web-public-sg" {
   name = "${var.prefix}-web-public-sg"
-  description = "Security Group to allow access to the internal EC2 instance in the private API subnet"
+  description = "Security Group to allow inbound access to the internal EC2 instance in the private API subnet"
   vpc_id = var.vpc_main_id
   ingress {
     cidr_blocks = ["0.0.0.0/0"]
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    description = "Allows inbound ssh from my personal IP"
+    description = "Allows inbound ssh connections from the Internet"
+  }
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 2376
+    to_port = 2376
+    protocol = "tcp"
+    description = "Allows inbound connections from Rancher"
+  }
+  ingress {
+    security_groups = [aws_security_group.developers-sg.id]
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    description = "Allows inbound ssh connections from the Internet for the developer team"
+  }
+  ingress {
+    security_groups = [aws_security_group.developers-sg.id]
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+    description = "Allows inbound Postgres connections from the Internet for the developer team"
   }
   egress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -70,12 +152,26 @@ resource "aws_security_group" "ec2-private-sg" {
   name = "${var.prefix}-ec2-private-sg"
   description = "Security Group to allow access to the internal EC2 instance in the private API subnet"
   vpc_id = var.vpc_main_id
+  # ingress {
+  #   cidr_blocks = ["0.0.0.0/0"]
+  #   from_port = 22
+  #   to_port = 22
+  #   protocol = "tcp"
+  #   description = "Allows inbound ssh connections from my personal IP"
+  # }
   ingress {
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.web-public-sg.id]
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    description = "Allows inbound ssh from my personal IP"
+    description = "Allows inbound ssh connections from the Internet for the developer team"
+  }
+  ingress {
+    security_groups = [aws_security_group.web-public-sg.id]
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+    description = "Allows inbound Postgres connections from the Internet for the developer team"
   }
   egress {
     cidr_blocks = ["0.0.0.0/0"]

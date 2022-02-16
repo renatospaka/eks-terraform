@@ -159,3 +159,54 @@ resource "aws_route_table_association" "db-rtb-association" {
   subnet_id = aws_subnet.db-subnets.*.id[count.index]
 }
 
+
+
+########################################
+# new Postgress private instance
+# 
+# data "aws_subnets" "db-subnet-ids" {  # -> why doesn't work here?
+#   filter {
+#     name   = "vpc-id"
+#     values = [aws_vpc.main-vpc.id]
+#   }
+# }
+
+resource "aws_db_subnet_group" "db-subnet-grp" {
+  name = "${var.prefix}-db-subnet-grp"
+  subnet_ids = [aws_subnet.db-subnets[0].id, aws_subnet.db-subnets[1].id]
+  # subnet_ids = [data.aws_subnets.db-subnet-ids.ids] # -> why doesn't work here?
+  description = "subnet group to allow Multi AZ on this instance"
+
+  tags = {
+    "Name" = "${var.prefix}-db-subnet-grp",
+    "cliente" = var.client,
+    "ambiente" = "dev"
+  }
+}
+
+
+resource "aws_db_instance" "db" {
+  identifier = "${var.prefix}-db-instance"
+  allocated_storage = 5
+  max_allocated_storage = 10
+  deletion_protection = false
+  skip_final_snapshot = true
+  publicly_accessible = false
+  instance_class = "db.t3.micro"
+  # parameter_group_name = "default.postgres-14"
+  engine = "postgres"
+  engine_version = "14.1"
+  username = "d3bid"
+  password = "dEUaC]xL&=8e?;nv2,"
+  # name = "bid-mvp" - there is no way to provide instance name differently from database name
+  db_name = "bid"
+  port = "5432"
+  vpc_security_group_ids = [var.sg-developers]
+  db_subnet_group_name = aws_db_subnet_group.db-subnet-grp.name
+
+  tags = {
+    "Name" = "${var.prefix}-db",
+    "cliente" = var.client,
+    "ambiente" = "dev"
+  }
+} 
