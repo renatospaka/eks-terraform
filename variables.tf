@@ -18,3 +18,4 @@ variable "api_max_size" {}
 variable "api_min_size" {}
 
 variable "db_subnets_size" {}
+variable "ip-fake" {}

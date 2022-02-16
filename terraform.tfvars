@@ -23,3 +23,5 @@ api_min_size = 2
 
 #which region where the workload would be created
 region = "sa-east-1"
+
+ip-fake = "277.277.277.277/177"
