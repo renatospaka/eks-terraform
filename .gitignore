@@ -14,6 +14,7 @@ terraform.tfs*
 
 ## pem files are out
 *.pem
+.pem/
 
 ## configurations files for kubernetes are out
 kubeconfig*
