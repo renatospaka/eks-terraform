@@ -6,8 +6,15 @@ credentials*.txt
 
 ## terraform out files
 .terraform/
-.terraform.lock*
+.terraform*.lock*
 terraform.tfs*
 
 ## my onw files about tips, cli and other stuff
 # commands.md
+
+## pem files are out
+*.pem
+.pem/
+
+## configurations files for kubernetes are out
+kubeconfig*

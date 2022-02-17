@@ -18,6 +18,4 @@ variable "api_max_size" {}
 variable "api_min_size" {}
 
 variable "db_subnets_size" {}
-
-
-# variable "ssh_key_name" {}
+variable "ip-fake" {}
